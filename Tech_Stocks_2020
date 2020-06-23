@@ -1,0 +1,20 @@
+library(tidyquant)
+library(tidyverse)
+
+#Get stocks data
+tickers <- c("AAPL","AMZN","MSFT","GOOGL")
+getSymbols(tickers,from="2020-01-01",to="2020-06-23")
+
+#Transform stocks data 
+prices <- tq_get(tickers, from = "2020-01-01", to = "2020-06-23", get = "stock.prices")
+prices %>% group_by(symbol) %>% slice(1)
+
+#Plot the stocks
+p <- prices %>% ggplot(aes(x=date,y=adjusted,color=symbol)) + geom_line() 
++ facet_wrap(~symbol,scales='free_y') 
++ theme_classic()+
++ labs(x = 'Date',
++      y = "Adjusted Price",
++      title = "Price Chart") +
++     scale_x_date(date_breaks = "month",
++                  date_labels = "%b\n%y")
